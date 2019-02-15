@@ -77,7 +77,39 @@ viewInput t p v toMsg =
 
 viewValidation : Model -> Html msg
 viewValidation model =
-  if model.password == model.passwordAgain then
-    div [ style "color" "green" ] [ text "OK" ]
-  else
-    div [ style "color" "red" ] [ text "Passwords do not match!" ]
+    if model.password /= model.passwordAgain then
+        viewDivError "Passwords do not match!"
+    else if String.length model.password < 8 then
+             viewDivError "Password is too short!"
+         else if not <| hasUpperLowerDigit model.password then
+                  viewDivError "Password must have uppercase, lowercase, and digit characters!"
+                  
+         else
+             div [ style "color" "green" ] [ text "OK" ]
+
+
+viewDivError : String -> Html msg
+viewDivError str =
+    div [ style "color" "red" ] [ text str ]
+
+
+hasChar : (Char -> Bool) -> String -> Bool
+hasChar f s =
+    String.length (String.filter f s) > 0
+
+
+hasUpper : String -> Bool
+hasUpper = hasChar Char.isUpper
+
+
+hasLower : String -> Bool
+hasLower = hasChar Char.isLower
+
+
+hasDigit : String -> Bool
+hasDigit = hasChar Char.isDigit
+
+
+hasUpperLowerDigit : String -> Bool
+hasUpperLowerDigit s =
+    hasUpper s && hasLower s && hasDigit s
