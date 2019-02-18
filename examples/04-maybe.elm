@@ -12,7 +12,6 @@ main =
   Browser.sandbox { init = init, update = update, view = view }
 
 
-
 -- MODEL
 
 
@@ -39,10 +38,10 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Celsius t ->
-        { model | celsius = t }
-    Fahren t ->
-        { model | fahren = t }
+    Celsius temp ->
+        { model | celsius = temp }
+    Fahren temp ->
+        { model | fahren = temp }
 
 
 -- VIEW
@@ -79,13 +78,13 @@ viewFrom userInput msg =
 
 
 celsiusToFahren : Float -> Float
-celsiusToFahren t =
-    t * 1.8 + 32
+celsiusToFahren temp =
+    temp * 1.8 + 32
 
 
 fahrenToCelsius : Float -> Float
 fahrenToCelsius t =
-    (t - 32) / 1.8
+    (temp - 32) / 1.8
 
 
 view : Model -> Html Msg
