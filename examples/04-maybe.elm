@@ -17,28 +17,32 @@ main =
 
 
 type alias Model =
-  { input : String
+  { celsiusInput : String
+  , fahrenInput : String
   }
 
 
 init : Model
 init =
-  { input = "" }
+  { celsiusInput = ""
+  , fahrenInput = "" }
 
 
 
 -- UPDATE
 
-
 type Msg
-  = Change String
+    = Celsius String
+    | Fahren String
 
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Change newInput ->
-      { model | input = newInput }
+    Celsius newInput ->
+        { model | celsiusInput = newInput }
+    Fahren newInput ->
+        { model | fahrenInput = newInput }
 
 
 
@@ -47,21 +51,36 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  case String.toFloat model.input of
-    Just celsius ->
-      viewConverter model.input "blue" "none" (String.fromFloat (celsius * 1.8 + 32))
+  case String.toFloat model.celsiusInput of
 
-    Nothing ->
-      viewConverter model.input "red" "solid" "???"
+      Just celsius ->
+          viewConverter model.celsiusInput "blue" "none" (String.fromFloat (celsius * 1.8 + 32))
+
+      Nothing ->
+          viewConverter model.celsiusInput "red" "solid" "???"
 
 
-viewConverter : String -> String -> String -> String -> Html Msg
+viewConverter : UserInput -> Color -> Border -> EquivalentTemp -> Html Msg
 viewConverter userInput color border equivalentTemp =
+    span []
+        [ viewMaker userInput equivalentTemp Celsius "°C = " "°F" color border
+        ]
+
+type alias Color = String
+type alias Border = String
+type alias ToUnit = String
+type alias FromUnit = String
+type alias UserInput = String
+type alias EquivalentTemp = String
+        
+viewMaker : UserInput -> EquivalentTemp -> (String -> Msg) -> FromUnit -> ToUnit -> Color -> Border -> Html Msg
+viewMaker userInput equivalentTemp unit fromUnit toUnit color border =
   span []
-    [ input [ value userInput, onInput Change, style "width" "40px" ] []
-    , text "°C = "
+    [ input [ value userInput, onInput unit, style "width" "40px" ] []
+    , text fromUnit
     , span [ style "color" color
            , style "border-color" color
            , style "border-style" border ] [ text equivalentTemp ]
-    , text "°F"
+    , text toUnit
     ]
+    
