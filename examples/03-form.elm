@@ -1,7 +1,7 @@
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 
 
 
@@ -21,12 +21,13 @@ type alias Model =
   , password : String
   , passwordAgain : String
   , age : String
+  , validate : Bool
   }
 
 
 init : Model
 init =
-  Model "" "" "" ""
+  Model "" "" "" "" False
 
 
 
@@ -37,22 +38,25 @@ type Msg
   | Password String
   | PasswordAgain String
   | Age String
+  | Validate
 
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     Name name ->
-        { model | name = name }
+        { model | name = name, validate = False }
 
     Password password ->
-        { model | password = password }
+        { model | password = password, validate = False }
 
     PasswordAgain password ->
-        { model | passwordAgain = password }
+        { model | passwordAgain = password, validate = False }
 
     Age age ->
-        { model | age = age }
+        { model | age = age, validate = False }
+    Validate ->
+        { model | validate = True }
 
 
 
@@ -66,13 +70,21 @@ view model =
         , viewInput "password" "Password" model.password Password
         , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
         , viewInput "age" "Age" model.age Age
-        , viewValidation model
+        , button [ onClick Validate ] [ text "validate" ]
+        , viewValidate model
         ]
 
         
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
   input [ type_ t, placeholder p, value v, onInput toMsg ] []
+
+
+viewValidate : Model -> Html msg
+viewValidate model =
+    if model.validate == True
+    then viewValidation model
+    else div [] []
 
 
 viewValidation : Model -> Html msg
@@ -84,7 +96,7 @@ viewValidation model =
     else if not <| hasUpperLowerDigit model.password then
         viewDivError "Password must have uppercase, lowercase, and digit characters!"
     else if not <| allChar Char.isDigit model.age then
-        viewDivError "Age must only contain decimal numbers!"
+        viewDivError "Age must only contain digits!"
     else
         div [ style "color" "green" ] [ text "OK" ]
 
