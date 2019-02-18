@@ -83,7 +83,7 @@ celsiusToFahren temp =
 
 
 fahrenToCelsius : Float -> Float
-fahrenToCelsius t =
+fahrenToCelsius temp =
     (temp - 32) / 1.8
 
 
