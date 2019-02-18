@@ -1,5 +1,5 @@
 import Browser
-import Html exposing (Html, Attribute, span, input, text)
+import Html exposing (Html, Attribute, div, span, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 
@@ -17,19 +17,19 @@ main =
 
 
 type alias Model =
-  { celsiusInput : String
-  , fahrenInput : String
+  { celsius : String
+  , fahren : String
   }
 
 
 init : Model
 init =
-  { celsiusInput = ""
-  , fahrenInput = "" }
-
+  { celsius = ""
+  , fahren = "" }
 
 
 -- UPDATE
+
 
 type Msg
     = Celsius String
@@ -39,32 +39,14 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Celsius newInput ->
-        { model | celsiusInput = newInput }
-    Fahren newInput ->
-        { model | fahrenInput = newInput }
-
+    Celsius t ->
+        { model | celsius = t }
+    Fahren t ->
+        { model | fahren = t }
 
 
 -- VIEW
 
-
-view : Model -> Html Msg
-view model =
-  case String.toFloat model.celsiusInput of
-
-      Just celsius ->
-          viewConverter model.celsiusInput "blue" "none" (String.fromFloat (celsius * 1.8 + 32))
-
-      Nothing ->
-          viewConverter model.celsiusInput "red" "solid" "???"
-
-
-viewConverter : UserInput -> Color -> Border -> EquivalentTemp -> Html Msg
-viewConverter userInput color border equivalentTemp =
-    span []
-        [ viewMaker userInput equivalentTemp Celsius "°C = " "°F" color border
-        ]
 
 type alias Color = String
 type alias Border = String
@@ -72,15 +54,53 @@ type alias ToUnit = String
 type alias FromUnit = String
 type alias UserInput = String
 type alias EquivalentTemp = String
-        
-viewMaker : UserInput -> EquivalentTemp -> (String -> Msg) -> FromUnit -> ToUnit -> Color -> Border -> Html Msg
-viewMaker userInput equivalentTemp unit fromUnit toUnit color border =
-  span []
-    [ input [ value userInput, onInput unit, style "width" "40px" ] []
-    , text fromUnit
-    , span [ style "color" color
-           , style "border-color" color
-           , style "border-style" border ] [ text equivalentTemp ]
-    , text toUnit
-    ]
-    
+
+
+viewMaybe : UserInput -> (Float -> Float) -> Html Msg
+viewMaybe userInput f =
+    case String.toFloat userInput of
+        Just value ->
+            viewTo "blue" "none"
+                (String.fromFloat (f value))
+        Nothing ->
+            viewTo "red" "solid" "???"
+
+
+viewTo : Color -> Border -> EquivalentTemp -> Html Msg
+viewTo color border equivalentTemp =
+    span [ style "color" color
+         , style "border-color" color
+         , style "border-style" border ] [ text equivalentTemp ]
+
+
+viewFrom : UserInput -> (String -> Msg) -> Html Msg
+viewFrom userInput msg =
+    input [ value userInput, onInput msg, style "width" "40px" ] []
+
+
+celsiusToFahren : Float -> Float
+celsiusToFahren t =
+    t * 1.8 + 32
+
+
+fahrenToCelsius : Float -> Float
+fahrenToCelsius t =
+    (t - 32) / 1.8
+
+
+view : Model -> Html Msg
+view model =
+    span []
+        [ div []
+             [ viewFrom model.celsius Celsius
+             , text "°C = "
+             , viewMaybe model.celsius celsiusToFahren
+             , text "°F"
+             ]
+        , div []
+             [ viewFrom model.fahren Fahren
+             , text "°F = "
+             , viewMaybe model.fahren fahrenToCelsius
+             , text "°C"
+             ]
+        ]
