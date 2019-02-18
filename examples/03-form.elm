@@ -80,12 +80,13 @@ viewValidation model =
     if model.password /= model.passwordAgain then
         viewDivError "Passwords do not match!"
     else if String.length model.password < 8 then
-             viewDivError "Password is too short!"
-         else if not <| hasUpperLowerDigit model.password then
-                  viewDivError "Password must have uppercase, lowercase, and digit characters!"
-                  
-         else
-             div [ style "color" "green" ] [ text "OK" ]
+        viewDivError "Password is too short!"
+    else if not <| hasUpperLowerDigit model.password then
+        viewDivError "Password must have uppercase, lowercase, and digit characters!"
+    else if not <| allChar Char.isDigit model.age then
+        viewDivError "Age must only contain decimal numbers!"
+    else
+        div [ style "color" "green" ] [ text "OK" ]
 
 
 viewDivError : String -> Html msg
@@ -96,6 +97,11 @@ viewDivError str =
 hasChar : (Char -> Bool) -> String -> Bool
 hasChar f s =
     String.length (String.filter f s) > 0
+
+
+allChar : (Char -> Bool) -> String -> Bool
+allChar f s =
+    String.length (String.filter f s) == String.length s
 
 
 hasUpper : String -> Bool
@@ -113,3 +119,4 @@ hasDigit = hasChar Char.isDigit
 hasUpperLowerDigit : String -> Bool
 hasUpperLowerDigit s =
     hasUpper s && hasLower s && hasDigit s
+    
