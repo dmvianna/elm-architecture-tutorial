@@ -1,6 +1,6 @@
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (alt, src)
 import Html.Events exposing (..)
 import Http
 import Random
@@ -90,4 +90,5 @@ view model =
 
 viewImg : Model -> Html Msg
 viewImg model =
-         img [ src <| makeUrl model.dieFace ] []
+         img [ src <| makeUrl model.dieFace
+             , alt <| String.fromInt model.dieFace ] []
