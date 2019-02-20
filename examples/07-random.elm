@@ -1,6 +1,8 @@
 import Browser
 import Html exposing (..)
+import Html.Attributes exposing (src)
 import Html.Events exposing (..)
+import Http
 import Random
 
 
@@ -19,6 +21,7 @@ main =
 
 
 -- MODEL
+
 
 
 type alias Model =
@@ -42,6 +45,7 @@ type Msg
   | NewFace Int
 
 
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -55,6 +59,14 @@ update msg model =
       , Cmd.none
       )
 
+
+
+makeUrl : Int -> String
+makeUrl n =
+    let
+        die = String.fromInt n
+    in
+        "https://www.random.org/dice/dice" ++ die ++ ".png"
 
 
 -- SUBSCRIPTIONS
@@ -72,6 +84,10 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   div []
-    [ h1 [] [ text (String.fromInt model.dieFace) ]
+    [ h1 [] [ viewImg model ]
     , button [ onClick Roll ] [ text "Roll" ]
     ]
+
+viewImg : Model -> Html Msg
+viewImg model =
+         img [ src <| makeUrl model.dieFace ] []
