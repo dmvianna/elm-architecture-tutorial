@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), init, main, makeUrl, subscriptions, update, view, viewImg)
+module Main exposing (Model, Msg(..), init, main, subscriptions, update, view, viewImg)
 
 import Browser
 import Html exposing (..)
@@ -27,13 +27,14 @@ main =
 
 
 type alias Model =
-    { dieFace : Int
+    { dieFace1 : Int
+    , dieFace2 : Int
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 1
+    ( Model 0 0
     , Cmd.none
     )
 
@@ -44,7 +45,19 @@ init _ =
 
 type Msg
     = Roll
-    | NewFace Int
+    | NewFace ( Int, Int )
+
+
+pair : Random.Generator ( Int, Int )
+pair =
+    Random.pair
+        (Random.int 1 6)
+        (Random.int 1 6)
+
+
+faces : Cmd Msg
+faces =
+    Random.generate NewFace pair
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,22 +65,13 @@ update msg model =
     case msg of
         Roll ->
             ( model
-            , Random.generate NewFace (Random.int 1 6)
+            , faces
             )
 
-        NewFace newFace ->
-            ( Model newFace
+        NewFace ( newFace1, newFace2 ) ->
+            ( Model newFace1 newFace2
             , Cmd.none
             )
-
-
-makeUrl : Int -> String
-makeUrl n =
-    let
-        die =
-            String.fromInt n
-    in
-    "https://www.random.org/dice/dice" ++ die ++ ".png"
 
 
 
@@ -86,7 +90,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ viewImg model ]
+        [ div [] [ viewImg model ]
         , button [ onClick Roll ] [ Html.text "Roll" ]
         ]
 
@@ -94,12 +98,8 @@ view model =
 viewImg : Model -> Html Msg
 viewImg model =
     span []
-        [ img
-            [ src <| makeUrl model.dieFace
-            , alt <| String.fromInt model.dieFace
-            ]
-            []
-        , makeDie model.dieFace
+        [ makeDie model.dieFace1
+        , makeDie model.dieFace2
         ]
 
 
@@ -127,7 +127,7 @@ makeDie n =
                     six
 
                 _ ->
-                    one
+                    zero
     in
     svg
         [ width "120"
@@ -135,6 +135,11 @@ makeDie n =
         , viewBox "0 0 120 120"
         ]
         (f n)
+
+
+zero =
+    [ squared
+    ]
 
 
 one =
