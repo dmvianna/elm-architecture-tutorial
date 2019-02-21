@@ -27,14 +27,23 @@ main =
 
 
 type alias Model =
-    { dieFace1 : Int
-    , dieFace2 : Int
+    { dieFace1 : Maybe Face
+    , dieFace2 : Maybe Face
     }
+
+
+type Face
+    = One
+    | Two
+    | Three
+    | Four
+    | Five
+    | Six
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model 0 0
+    ( Model Nothing Nothing
     , Cmd.none
     )
 
@@ -45,14 +54,30 @@ init _ =
 
 type Msg
     = Roll
-    | NewFace ( Int, Int )
+    | NewFace ( Face, Face )
 
 
-pair : Random.Generator ( Int, Int )
+pair : Random.Generator ( Face, Face )
 pair =
     Random.pair
-        (Random.int 1 6)
-        (Random.int 1 6)
+        (Random.weighted
+            ( 1, One )
+            [ ( 1, Two )
+            , ( 1, Three )
+            , ( 1, Four )
+            , ( 1, Five )
+            , ( 1, Six )
+            ]
+        )
+        (Random.weighted
+            ( 1, One )
+            [ ( 1, Two )
+            , ( 1, Three )
+            , ( 1, Four )
+            , ( 1, Five )
+            , ( 6, Six )
+            ]
+        )
 
 
 faces : Cmd Msg
@@ -69,7 +94,7 @@ update msg model =
             )
 
         NewFace ( newFace1, newFace2 ) ->
-            ( Model newFace1 newFace2
+            ( Model (Just newFace1) (Just newFace2)
             , Cmd.none
             )
 
@@ -103,30 +128,30 @@ viewImg model =
         ]
 
 
-makeDie : Int -> Svg Msg
+makeDie : Maybe Face -> Svg Msg
 makeDie n =
     let
         f n_ =
             case n_ of
-                1 ->
+                Just One ->
                     one
 
-                2 ->
+                Just Two ->
                     two
 
-                3 ->
+                Just Three ->
                     three
 
-                4 ->
+                Just Four ->
                     four
 
-                5 ->
+                Just Five ->
                     five
 
-                6 ->
+                Just Six ->
                     six
 
-                _ ->
+                Nothing ->
                     zero
     in
     svg
