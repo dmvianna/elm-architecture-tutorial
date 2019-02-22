@@ -113,7 +113,10 @@ update msg model =
         NewFace ( newFace1, newFace2 ) ->
             let
                 m =
-                    { model | dieFace1 = Just newFace1, dieFace2 = Just newFace2 }
+                    { model
+                        | dieFace1 = Just newFace1
+                        , dieFace2 = Just newFace2
+                    }
             in
             count m 10
 
@@ -242,7 +245,7 @@ dot x y =
     circle
         [ cx <| String.fromInt x
         , cy <| String.fromInt y
-        , r "5"
+        , r "10"
         ]
         []
 
