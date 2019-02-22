@@ -86,17 +86,26 @@ subscriptions model =
 -- VIEW
 
 
+zeroPrefix : String -> String
+zeroPrefix s =
+    if String.length s == 1 then
+        "0" ++ s
+
+    else
+        s
+
+
 view : Model -> Html Msg
 view model =
     let
         hour =
-            String.fromInt (Time.toHour model.zone model.time)
+            zeroPrefix <| String.fromInt (Time.toHour model.zone model.time)
 
         minute =
-            String.fromInt (Time.toMinute model.zone model.time)
+            zeroPrefix <| String.fromInt (Time.toMinute model.zone model.time)
 
         second =
-            String.fromInt (Time.toSecond model.zone model.time)
+            zeroPrefix <| String.fromInt (Time.toSecond model.zone model.time)
     in
     div []
         [ h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second) ]
