@@ -2,6 +2,7 @@ module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Task
 import Time
@@ -108,6 +109,21 @@ view model =
             zeroPrefix <| String.fromInt (Time.toSecond model.zone model.time)
     in
     div []
-        [ h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second) ]
-        , button [ onClick Pause ] [ Html.text "pause" ]
+        [ h1
+            [ style "text-align" "center"
+            , style "left" "50%"
+            , font
+            ]
+            [ text (hour ++ ":" ++ minute ++ ":" ++ second) ]
+        , button
+            [ style "display" "block"
+            , style "margin" "auto"
+            , font
+            , onClick Pause
+            ]
+            [ Html.text "pause" ]
         ]
+
+
+font =
+    style "font-family" "'Lucida Console',Monaco,monospace"
