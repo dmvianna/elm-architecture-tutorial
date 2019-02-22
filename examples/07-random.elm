@@ -4,9 +4,11 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (alt, src)
 import Html.Events exposing (..)
+import Process
 import Random
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Task
 
 
 
@@ -29,6 +31,7 @@ main =
 type alias Model =
     { dieFace1 : Maybe Face
     , dieFace2 : Maybe Face
+    , rolls : Int
     }
 
 
@@ -43,7 +46,7 @@ type Face
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Nothing Nothing
+    ( Model Nothing Nothing 0
     , Cmd.none
     )
 
@@ -85,6 +88,20 @@ faces =
     Random.generate NewFace pair
 
 
+count : Model -> Int -> ( Model, Cmd Msg )
+count model n =
+    if model.rolls == n then
+        ( { model | rolls = 0 }
+        , Cmd.none
+        )
+
+    else
+        ( { model | rolls = model.rolls + 1 }
+        , Process.sleep 50
+            |> Task.perform (\_ -> Roll)
+        )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -94,9 +111,11 @@ update msg model =
             )
 
         NewFace ( newFace1, newFace2 ) ->
-            ( Model (Just newFace1) (Just newFace2)
-            , Cmd.none
-            )
+            let
+                m =
+                    { model | dieFace1 = Just newFace1, dieFace2 = Just newFace2 }
+            in
+            count m 10
 
 
 
