@@ -4,6 +4,8 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Svg
+import Svg.Attributes as Svg
 import Task
 import Time
 
@@ -122,8 +124,32 @@ view model =
             , onClick Pause
             ]
             [ Html.text "pause" ]
+        , clock model
         ]
 
 
 font =
     style "font-family" "'Lucida Console',Monaco,monospace"
+
+
+clock : Model -> Html Msg
+clock m =
+    span
+        [ style "margin" "3px"
+        ]
+        [ Svg.svg
+            [ Svg.width "120"
+            , Svg.height "120"
+            , Svg.viewBox "0 0 120 120"
+            ]
+            [ Svg.circle
+                [ Svg.cx "50"
+                , Svg.cy "50"
+                , Svg.r "50"
+                , Svg.strokeWidth "3"
+                , Svg.stroke "black"
+                , Svg.fill "white"
+                ]
+                []
+            ]
+        ]
