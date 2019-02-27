@@ -134,8 +134,8 @@ font =
 
 clock : Model -> Html Msg
 clock m =
-    span
-        [ style "margin" "3px"
+    div
+        [ style "text-align" "center"
         ]
         [ Svg.svg
             [ Svg.width "120"
@@ -143,8 +143,8 @@ clock m =
             , Svg.viewBox "0 0 120 120"
             ]
             [ Svg.circle
-                [ Svg.cx "50"
-                , Svg.cy "50"
+                [ Svg.cx "50%"
+                , Svg.cy "50%"
                 , Svg.r "50"
                 , Svg.strokeWidth "3"
                 , Svg.stroke "black"
