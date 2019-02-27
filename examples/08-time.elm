@@ -201,7 +201,7 @@ clock m =
         [ Svg.svg
             [ Svg.width <| String.fromInt frameSide
             , Svg.height <| String.fromInt frameSide
-            , Svg.viewBox <| "0 0 " ++ String.fromInt frameSide ++ String.fromInt frameSide
+            , Svg.viewBox <| "0 0 " ++ String.fromInt frameSide ++ " " ++ String.fromInt frameSide
             ]
             [ Svg.circle
                 [ Svg.cx "50%"
