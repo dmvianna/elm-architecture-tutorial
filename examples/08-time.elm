@@ -132,6 +132,24 @@ font =
     style "font-family" "'Lucida Console',Monaco,monospace"
 
 
+timeToAngle : Int -> Int -> Float
+timeToAngle time unit =
+    turns <| toFloat time / toFloat unit + radians (pi / 4.2)
+
+
+hand : Int -> Float -> Float -> String -> Svg.Svg Msg
+hand frameSide x y colour =
+    Svg.line
+        [ Svg.x1 <| String.fromInt (frameSide // 2)
+        , Svg.y1 <| String.fromInt (frameSide // 2)
+        , Svg.x2 <| String.fromFloat x
+        , Svg.y2 <| String.fromFloat y
+        , Svg.strokeWidth "3"
+        , Svg.stroke colour
+        ]
+        []
+
+
 clock : Model -> Html Msg
 clock m =
     let
@@ -142,13 +160,22 @@ clock m =
             50
 
         angleSec =
-            turns <| toFloat (Time.toSecond m.zone m.time) / toFloat 60 + radians (pi / 4.2)
+            timeToAngle (Time.toSecond m.zone m.time) 60
+
+        angleMin =
+            timeToAngle (Time.toMinute m.zone m.time) 60
 
         xSec =
             frameSide / 2 + radius * cos angleSec
 
         ySec =
             frameSide / 2 + radius * sin angleSec
+
+        xMin =
+            frameSide / 2 + (radius - 10) * cos angleMin
+
+        yMin =
+            frameSide / 2 + (radius - 10) * sin angleMin
     in
     div
         [ style "text-align" "center"
@@ -167,14 +194,7 @@ clock m =
                 , Svg.fill "white"
                 ]
                 []
-            , Svg.line
-                [ Svg.x1 <| String.fromInt (frameSide // 2)
-                , Svg.y1 <| String.fromInt (frameSide // 2)
-                , Svg.x2 <| String.fromFloat xSec
-                , Svg.y2 <| String.fromFloat ySec
-                , Svg.strokeWidth "3"
-                , Svg.stroke "red"
-                ]
-                []
+            , hand frameSide xSec ySec "red"
+            , hand frameSide xMin yMin "black"
             ]
         ]
