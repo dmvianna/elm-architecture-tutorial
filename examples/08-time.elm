@@ -136,10 +136,10 @@ clock : Model -> Html Msg
 clock m =
     let
         xMin =
-            String.fromFloat <| 100 * (sin <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 59)
+            String.fromFloat <| 100 * (cos <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 60)
 
         yMin =
-            String.fromFloat <| 100 * (cos <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 59)
+            String.fromFloat <| 100 * (sin <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 60)
     in
     div
         [ style "text-align" "center"
