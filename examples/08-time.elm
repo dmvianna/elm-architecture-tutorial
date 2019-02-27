@@ -145,10 +145,10 @@ clock m =
             turns <| toFloat (Time.toSecond m.zone m.time) / toFloat 60
 
         xSec =
-            50 + 40 * cos angleSec
+            frameSide / 2 + 45 * cos angleSec
 
         ySec =
-            50 + 40 * sin angleSec
+            frameSide / 2 + 45 * sin angleSec
     in
     div
         [ style "text-align" "center"
