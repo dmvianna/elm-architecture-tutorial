@@ -141,11 +141,14 @@ clock m =
         radius =
             50
 
-        xMin =
-            String.fromFloat <| 100 * (cos <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 60)
+        angleSec =
+            turns <| toFloat (Time.toSecond m.zone m.time) / toFloat 60
 
-        yMin =
-            String.fromFloat <| 100 * (sin <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 60)
+        xSec =
+            50 + 40 * cos angleSec
+
+        ySec =
+            50 + 40 * sin angleSec
     in
     div
         [ style "text-align" "center"
@@ -167,8 +170,8 @@ clock m =
             , Svg.line
                 [ Svg.x1 <| String.fromInt (frameSide // 2)
                 , Svg.y1 <| String.fromInt (frameSide // 2)
-                , Svg.x2 <| xMin ++ "%"
-                , Svg.y2 <| yMin ++ "%"
+                , Svg.x2 <| String.fromFloat xSec
+                , Svg.y2 <| String.fromFloat ySec
                 , Svg.strokeWidth "3"
                 , Svg.stroke "black"
                 ]
