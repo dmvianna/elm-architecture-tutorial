@@ -137,14 +137,14 @@ timeToAngle time unit =
     turns <| toFloat time / toFloat unit + radians (pi / 4.2)
 
 
-hand : Int -> Float -> Float -> String -> Svg.Svg Msg
-hand frameSide x y colour =
+hand : Int -> Float -> Float -> String -> Int -> Svg.Svg Msg
+hand frameSide x y colour strokeWidth =
     Svg.line
         [ Svg.x1 <| String.fromInt (frameSide // 2)
         , Svg.y1 <| String.fromInt (frameSide // 2)
         , Svg.x2 <| String.fromFloat x
         , Svg.y2 <| String.fromFloat y
-        , Svg.strokeWidth "3"
+        , Svg.strokeWidth <| String.fromInt strokeWidth
         , Svg.stroke colour
         ]
         []
@@ -184,10 +184,10 @@ clock m =
             frameSide / 2 + radius * sin angleSec
 
         xMin =
-            frameSide / 2 + (radius - 10) * cos angleMin
+            frameSide / 2 + (radius - 5) * cos angleMin
 
         yMin =
-            frameSide / 2 + (radius - 10) * sin angleMin
+            frameSide / 2 + (radius - 5) * sin angleMin
 
         xHour =
             frameSide / 2 + (radius - 20) * cos angleHour
@@ -212,8 +212,8 @@ clock m =
                 , Svg.fill "white"
                 ]
                 []
-            , hand frameSide xSec ySec "red"
-            , hand frameSide xMin yMin "black"
-            , hand frameSide xHour yHour "black"
+            , hand frameSide xSec ySec "red" 3
+            , hand frameSide xMin yMin "black" 3
+            , hand frameSide xHour yHour "black" 4
             ]
         ]
