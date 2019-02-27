@@ -142,7 +142,7 @@ clock m =
             50
 
         angleSec =
-            turns <| toFloat (Time.toSecond m.zone m.time) / toFloat 60
+            turns <| toFloat (Time.toSecond m.zone m.time) / toFloat 60 + radians (pi / 4.2)
 
         xSec =
             frameSide / 2 + radius * cos angleSec
@@ -173,7 +173,7 @@ clock m =
                 , Svg.x2 <| String.fromFloat xSec
                 , Svg.y2 <| String.fromFloat ySec
                 , Svg.strokeWidth "3"
-                , Svg.stroke "black"
+                , Svg.stroke "red"
                 ]
                 []
             ]
