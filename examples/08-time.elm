@@ -150,6 +150,15 @@ hand frameSide x y colour =
         []
 
 
+twelveHours : Int -> Int
+twelveHours hour =
+    if hour > 12 then
+        hour - 12
+
+    else
+        hour
+
+
 clock : Model -> Html Msg
 clock m =
     let
@@ -165,6 +174,9 @@ clock m =
         angleMin =
             timeToAngle (Time.toMinute m.zone m.time) 60
 
+        angleHour =
+            timeToAngle (twelveHours <| Time.toHour m.zone m.time) 12
+
         xSec =
             frameSide / 2 + radius * cos angleSec
 
@@ -176,6 +188,12 @@ clock m =
 
         yMin =
             frameSide / 2 + (radius - 10) * sin angleMin
+
+        xHour =
+            frameSide / 2 + (radius - 20) * cos angleHour
+
+        yHour =
+            frameSide / 2 + (radius - 20) * sin angleHour
     in
     div
         [ style "text-align" "center"
@@ -196,5 +214,6 @@ clock m =
                 []
             , hand frameSide xSec ySec "red"
             , hand frameSide xMin yMin "black"
+            , hand frameSide xHour yHour "black"
             ]
         ]
