@@ -135,6 +135,12 @@ font =
 clock : Model -> Html Msg
 clock m =
     let
+        frameSide =
+            120
+
+        radius =
+            50
+
         xMin =
             String.fromFloat <| 100 * (cos <| 2 * pi * toFloat (Time.toSecond m.zone m.time) / toFloat 60)
 
@@ -145,22 +151,22 @@ clock m =
         [ style "text-align" "center"
         ]
         [ Svg.svg
-            [ Svg.width "120"
-            , Svg.height "120"
-            , Svg.viewBox "0 0 120 120"
+            [ Svg.width <| String.fromInt frameSide
+            , Svg.height <| String.fromInt frameSide
+            , Svg.viewBox <| "0 0 " ++ String.fromInt frameSide ++ String.fromInt frameSide
             ]
             [ Svg.circle
                 [ Svg.cx "50%"
                 , Svg.cy "50%"
-                , Svg.r "50"
+                , Svg.r <| String.fromInt radius
                 , Svg.strokeWidth "3"
                 , Svg.stroke "black"
                 , Svg.fill "white"
                 ]
                 []
             , Svg.line
-                [ Svg.x1 "50%"
-                , Svg.y1 "50%"
+                [ Svg.x1 <| String.fromInt (frameSide // 2)
+                , Svg.y1 <| String.fromInt (frameSide // 2)
                 , Svg.x2 <| xMin ++ "%"
                 , Svg.y2 <| yMin ++ "%"
                 , Svg.strokeWidth "3"
